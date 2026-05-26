@@ -1,0 +1,13 @@
+__pycache__/
+*.pyc
+*.pyo
+database.db
+*.db
+.env
+venv/
+.venv/
+env/
+*.txt
+!requirements.txt
+startup.txt
+startup_err.txt

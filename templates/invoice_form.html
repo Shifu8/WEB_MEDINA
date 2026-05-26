@@ -1,0 +1,115 @@
+{% extends "base.html" %}
+{% set active_page = "invoices" %}
+
+{% block title %}New Invoice - Cloud Billing System{% endblock %}
+
+{% block content %}
+<div class="page-header fade-in">
+    <div>
+        <h4><i class="bi bi-plus-lg me-2"></i>New Invoice</h4>
+        <p>Create a new invoice for a client</p>
+    </div>
+    <a href="{{ url_for('invoices') }}" class="btn btn-outline-secondary">
+        <i class="bi bi-arrow-left me-1"></i> Back
+    </a>
+</div>
+
+<div class="row fade-in">
+    <div class="col-lg-8">
+        <div class="card mb-4">
+            <div class="card-header">
+                <span><i class="bi bi-file-earmark-text me-2"></i>Invoice Details</span>
+            </div>
+            <div class="card-body">
+                <form method="POST" action="{{ url_for('invoice_create') }}" id="invoiceForm">
+                    <div class="mb-4">
+                        <label for="client_id" class="form-label">Client <span class="text-danger">*</span></label>
+                        <select class="form-select" id="client_id" name="client_id" required>
+                            <option value="">Select a client...</option>
+                            {% for c in clients %}
+                            <option value="{{ c.id }}">{{ c.name }} {% if c.email %}({{ c.email }}){% endif %}</option>
+                            {% endfor %}
+                        </select>
+                        {% if not clients %}
+                        <div class="form-text text-warning">
+                            <i class="bi bi-exclamation-triangle me-1"></i>No clients available.
+                            <a href="{{ url_for('client_add') }}">Add a client first</a>.
+                        </div>
+                        {% endif %}
+                    </div>
+
+                    <hr class="my-4">
+
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <label class="form-label mb-0 fw-bold"><i class="bi bi-cart me-2"></i>Line Items</label>
+                        <button type="button" class="btn btn-sm btn-outline-primary" id="addItemBtn">
+                            <i class="bi bi-plus-lg"></i> Add Item
+                        </button>
+                    </div>
+
+                    <div id="itemsContainer" class="mb-3">
+                        <!-- Line items added by JS -->
+                    </div>
+
+                    <!-- Hidden template for product options -->
+                    <select id="productSelectTemplate" class="d-none">
+                        {% for p in products %}
+                        <option value="{{ p.id }}" data-price="{{ p.price }}" data-stock="{{ p.stock }}">
+                            {{ p.name }} - ${{ "%.2f"|format(p.price) }} (stock: {{ p.stock }})
+                        </option>
+                        {% endfor %}
+                    </select>
+
+                    <div class="d-flex justify-content-between align-items-center border-top pt-3">
+                        <span class="fs-5 fw-bold">Total:</span>
+                        <span class="fs-3 fw-bold text-primary" id="invoiceGrandTotal">$0.00</span>
+                    </div>
+
+                    <div class="mt-4 d-flex gap-2">
+                        <button type="submit" class="btn btn-success btn-lg">
+                            <i class="bi bi-check-lg me-1"></i> Create Invoice
+                        </button>
+                        <a href="{{ url_for('invoices') }}" class="btn btn-outline-secondary btn-lg">Cancel</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-4">
+        <div class="card">
+            <div class="card-header">
+                <span><i class="bi bi-info-circle me-2"></i>Quick Tips</span>
+            </div>
+            <div class="card-body">
+                <ul class="list-unstyled mb-0 small">
+                    <li class="mb-2"><i class="bi bi-check-circle text-success me-2"></i>Select a client first</li>
+                    <li class="mb-2"><i class="bi bi-check-circle text-success me-2"></i>Add at least one product</li>
+                    <li class="mb-2"><i class="bi bi-check-circle text-success me-2"></i>Quantities can't exceed stock</li>
+                    <li class="mb-2"><i class="bi bi-check-circle text-success me-2"></i>Prices are auto-calculated</li>
+                    <li><i class="bi bi-check-circle text-success me-2"></i>Stock is deducted on creation</li>
+                </ul>
+            </div>
+        </div>
+        {% if not products %}
+        <div class="card mt-3">
+            <div class="card-body text-center py-4">
+                <i class="bi bi-box text-muted" style="font-size: 2rem;"></i>
+                <p class="text-muted mt-2 mb-0">No products available</p>
+                <a href="{{ url_for('product_add') }}" class="btn btn-primary btn-sm mt-2">Add products first</a>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    // Pass product data to main.js for the invoice form
+    document.addEventListener('DOMContentLoaded', function () {
+        // If the addItemBtn already exists in main.js, it will handle this
+        // but we ensure the product options are available
+    });
+</script>
+{% endblock %}

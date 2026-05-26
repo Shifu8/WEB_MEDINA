@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+{% set active_page = "clients" %}
+
+{% block title %}{{ 'Edit' if client else 'Add' }} Client - Cloud Billing System{% endblock %}
+
+{% block content %}
+<div class="page-header fade-in">
+    <div>
+        <h4><i class="bi bi-{{ 'pencil' if client else 'plus-lg' }} me-2"></i>{{ 'Edit' if client else 'Add' }} Client</h4>
+        <p>{{ 'Update client information' if client else 'Register a new client' }}</p>
+    </div>
+    <a href="{{ url_for('clients') }}" class="btn btn-outline-secondary">
+        <i class="bi bi-arrow-left me-1"></i> Back
+    </a>
+</div>
+
+<div class="row justify-content-center fade-in">
+    <div class="col-lg-8">
+        <div class="card">
+            <div class="card-body p-4">
+                <form method="POST" action="{{ url_for('client_edit', id=client.id) if client else url_for('client_add') }}">
+                    <div class="row g-3">
+                        <div class="col-12">
+                            <label for="name" class="form-label">Client Name <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="name" name="name"
+                                   value="{{ client.name if client else '' }}" placeholder="Enter full name" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="email" class="form-label">Email</label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="bi bi-envelope"></i></span>
+                                <input type="email" class="form-control" id="email" name="email"
+                                       value="{{ client.email if client else '' }}" placeholder="email@example.com">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="phone" class="form-label">Phone</label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="bi bi-telephone"></i></span>
+                                <input type="text" class="form-control" id="phone" name="phone"
+                                       value="{{ client.phone if client else '' }}" placeholder="+1 555-000-0000">
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <label for="address" class="form-label">Address</label>
+                            <textarea class="form-control" id="address" name="address" rows="3"
+                                      placeholder="Street, city, postal code">{{ client.address if client else '' }}</textarea>
+                        </div>
+                    </div>
+
+                    <div class="mt-4 d-flex gap-2">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-{{ 'check-lg' if client else 'plus-lg' }} me-1"></i>
+                            {{ 'Update Client' if client else 'Add Client' }}
+                        </button>
+                        <a href="{{ url_for('clients') }}" class="btn btn-outline-secondary">Cancel</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+{% set active_page = "invoices" %}
+
+{% block title %}Invoices - Cloud Billing System{% endblock %}
+
+{% block content %}
+<div class="page-header fade-in">
+    <div>
+        <h4><i class="bi bi-receipt-cutoff me-2"></i>Invoices</h4>
+        <p>Manage billing and invoices</p>
+    </div>
+    <a href="{{ url_for('invoice_create') }}" class="btn btn-primary">
+        <i class="bi bi-plus-lg me-1"></i> New Invoice
+    </a>
+</div>
+
+<div class="card fade-in">
+    <div class="card-body p-0">
+        <div class="table-container">
+            <table class="table table-hover mb-0">
+                <thead>
+                    <tr>
+                        <th>Invoice #</th>
+                        <th>Client</th>
+                        <th>Date</th>
+                        <th class="text-end">Total</th>
+                        <th class="text-end">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% if invoices %}
+                        {% for inv in invoices %}
+                        <tr>
+                            <td><strong>#{{ inv.id }}</strong></td>
+                            <td>{{ inv.client_name }}</td>
+                            <td>{{ inv.date[:10] }}</td>
+                            <td class="text-end fw-bold">${{ "%.2f"|format(inv.total) }}</td>
+                            <td class="text-end">
+                                <a href="{{ url_for('invoice_view', id=inv.id) }}" class="btn btn-sm btn-outline-info" title="View">
+                                    <i class="bi bi-eye"></i>
+                                </a>
+                                <a href="{{ url_for('invoice_delete', id=inv.id) }}" class="btn btn-sm btn-outline-danger" title="Delete"
+                                   data-confirm="Delete invoice #{{ inv.id }}? This will restore product stock.">
+                                    <i class="bi bi-trash"></i>
+                                </a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    {% else %}
+                        <tr>
+                            <td colspan="5" class="text-center py-5">
+                                <i class="bi bi-receipt" style="font-size: 2.5rem; color: #cbd5e1;"></i>
+                                <p class="text-muted mt-2 mb-0">No invoices yet</p>
+                                <a href="{{ url_for('invoice_create') }}" class="btn btn-primary btn-sm mt-2">
+                                    <i class="bi bi-plus-lg"></i> Create your first invoice
+                                </a>
+                            </td>
+                        </tr>
+                    {% endif %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}
