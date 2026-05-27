@@ -1,0 +1,127 @@
+@{
+    ViewData["Title"] = "Nueva factura";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2><i class="bi bi-receipt me-2"></i>Nueva factura</h2>
+    <a href="@Url.Action("Index")" class="btn btn-secondary"><i class="bi bi-arrow-left"></i> Volver</a>
+</div>
+
+<div class="card">
+    <div class="card-body">
+        <form id="invoiceForm" method="post">
+            <div class="mb-3">
+                <label class="form-label">Cliente</label>
+                <select name="clientId" class="form-select" required>
+                    <option value="">Seleccionar cliente...</option>
+                    @foreach (var c in (List<Client>)ViewBag.Clients)
+                    {
+                        <option value="@c.Id">@c.Name</option>
+                    }
+                </select>
+            </div>
+            <hr>
+            <h5>Productos</h5>
+            <div class="mb-3">
+                <div class="row g-2">
+                    <div class="col-md-6">
+                        <select id="productSelect" class="form-select">
+                            <option value="">Seleccionar producto...</option>
+                            @foreach (var p in (List<Product>)ViewBag.Products)
+                            {
+                                <option value="@p.Id" data-price="@p.Price" data-stock="@p.Stock">@p.Name - $@p.Price.ToString("N2") (Stock: @p.Stock)</option>
+                            }
+                        </select>
+                    </div>
+                    <div class="col-md-2">
+                        <input type="number" id="quantityInput" class="form-control" placeholder="Cantidad" min="1" value="1">
+                    </div>
+                    <div class="col-md-2">
+                        <button type="button" id="addItemBtn" class="btn btn-success w-100"><i class="bi bi-plus"></i> Agregar</button>
+                    </div>
+                </div>
+            </div>
+            <div class="table-responsive mb-3">
+                <table class="table table-bordered" id="itemsTable">
+                    <thead>
+                        <tr>
+                            <th>Producto</th>
+                            <th>Cantidad</th>
+                            <th>Precio</th>
+                            <th>Subtotal</th>
+                            <th>Acción</th>
+                        </tr>
+                    </thead>
+                    <tbody id="itemsBody">
+                    </tbody>
+                    <tfoot>
+                        <tr class="table-active">
+                            <td colspan="3" class="text-end fw-bold">Total:</td>
+                            <td id="totalDisplay" class="fw-bold">$0.00</td>
+                            <td></td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+            <input type="hidden" name="total" id="totalInput" value="0">
+            <input type="hidden" name="itemsJson" id="itemsJsonInput" value="[]">
+            <button type="submit" class="btn btn-primary"><i class="bi bi-save"></i> Generar factura</button>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        const items = [];
+        let nextId = 1;
+
+        function renderItems() {
+            const tbody = document.getElementById('itemsBody');
+            tbody.innerHTML = '';
+            let total = 0;
+            items.forEach((item, idx) => {
+                const subtotal = item.quantity * item.price;
+                total += subtotal;
+                tbody.innerHTML += `<tr>
+                    <td>${item.name}</td>
+                    <td>${item.quantity}</td>
+                    <td>$${item.price.toFixed(2)}</td>
+                    <td>$${subtotal.toFixed(2)}</td>
+                    <td><button type="button" class="btn btn-sm btn-danger" onclick="removeItem(${idx})"><i class="bi bi-x"></i></button></td>
+                </tr>`;
+            });
+            document.getElementById('totalDisplay').textContent = `$${total.toFixed(2)}`;
+            document.getElementById('totalInput').value = total.toFixed(2);
+            document.getElementById('itemsJsonInput').value = JSON.stringify(items.map(i => ({ productId: i.id, quantity: i.quantity, price: i.price })));
+        }
+
+        function removeItem(idx) {
+            items.splice(idx, 1);
+            renderItems();
+        }
+
+        document.getElementById('addItemBtn').addEventListener('click', function() {
+            const select = document.getElementById('productSelect');
+            const qtyInput = document.getElementById('quantityInput');
+            const option = select.options[select.selectedIndex];
+            if (!option || !option.value) { alert('Seleccione un producto'); return; }
+            const qty = parseInt(qtyInput.value);
+            if (qty < 1) { alert('Cantidad inválida'); return; }
+            const stock = parseInt(option.dataset.stock);
+            if (qty > stock) { alert(`Stock insuficiente (disponible: ${stock})`); return; }
+            items.push({
+                id: parseInt(option.value),
+                name: option.text.split(' - ')[0],
+                price: parseFloat(option.dataset.price),
+                quantity: qty
+            });
+            renderItems();
+            qtyInput.value = 1;
+            select.selectedIndex = 0;
+        });
+
+        document.getElementById('invoiceForm').addEventListener('submit', function(e) {
+            if (items.length === 0) { e.preventDefault(); alert('Agregue al menos un producto'); }
+        });
+    </script>
+}

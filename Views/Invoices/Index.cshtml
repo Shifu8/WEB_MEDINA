@@ -1,0 +1,51 @@
+@model IEnumerable<Invoice>
+@{
+    ViewData["Title"] = "Facturas";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2><i class="bi bi-receipt me-2"></i>Facturas</h2>
+    <a href="@Url.Action("Create")" class="btn btn-primary"><i class="bi bi-plus-lg"></i> Nueva factura</a>
+</div>
+
+<div class="card">
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Cliente</th>
+                        <th>Fecha</th>
+                        <th>Total</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (Model != null && Model.Any())
+                    {
+                        @foreach (var inv in Model)
+                        {
+                            <tr>
+                                <td>@inv.Id</td>
+                                <td>@inv.Client.Name</td>
+                                <td>@inv.Date.ToString("dd/MM/yyyy HH:mm")</td>
+                                <td>$@inv.Total.ToString("N2")</td>
+                                <td>
+                                    <a href="@Url.Action("View", new { id = inv.Id })" class="btn btn-sm btn-info"><i class="bi bi-eye"></i></a>
+                                    <form method="post" action="@Url.Action("Delete", new { id = inv.Id })" style="display:inline;" onsubmit="return confirm('¿Anular esta factura?')">
+                                        <button type="submit" class="btn btn-sm btn-danger"><i class="bi bi-trash"></i></button>
+                                    </form>
+                                </td>
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        <tr><td colspan="5" class="text-center text-muted">No hay facturas registradas</td></tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

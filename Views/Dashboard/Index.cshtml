@@ -1,0 +1,74 @@
+@{
+    ViewData["Title"] = "Dashboard";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2><i class="bi bi-speedometer2 me-2"></i>Dashboard</h2>
+</div>
+
+<div class="row g-4">
+    <div class="col-md-3">
+        <div class="card text-white bg-primary">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h6 class="card-title">Productos</h6>
+                        <h2 class="mb-0">@ViewBag.TotalProducts</h2>
+                    </div>
+                    <i class="bi bi-box fs-1 opacity-50"></i>
+                </div>
+            </div>
+            <div class="card-footer bg-transparent border-0">
+                <a href="@Url.Action("Index", "Products")" class="text-white text-decoration-none small">Ver detalles <i class="bi bi-arrow-right"></i></a>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-white bg-success">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h6 class="card-title">Clientes</h6>
+                        <h2 class="mb-0">@ViewBag.TotalClients</h2>
+                    </div>
+                    <i class="bi bi-people fs-1 opacity-50"></i>
+                </div>
+            </div>
+            <div class="card-footer bg-transparent border-0">
+                <a href="@Url.Action("Index", "Clients")" class="text-white text-decoration-none small">Ver detalles <i class="bi bi-arrow-right"></i></a>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-white bg-warning">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h6 class="card-title">Facturas</h6>
+                        <h2 class="mb-0">@ViewBag.TotalInvoices</h2>
+                    </div>
+                    <i class="bi bi-receipt fs-1 opacity-50"></i>
+                </div>
+            </div>
+            <div class="card-footer bg-transparent border-0">
+                <a href="@Url.Action("Index", "Invoices")" class="text-white text-decoration-none small">Ver detalles <i class="bi bi-arrow-right"></i></a>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-white bg-info">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h6 class="card-title">Ingresos</h6>
+                        <h2 class="mb-0">$@ViewBag.TotalRevenue.ToString("N2")</h2>
+                    </div>
+                    <i class="bi bi-currency-dollar fs-1 opacity-50"></i>
+                </div>
+            </div>
+            <div class="card-footer bg-transparent border-0">
+                <a href="@Url.Action("Index", "Invoices")" class="text-white text-decoration-none small">Ver detalles <i class="bi bi-arrow-right"></i></a>
+            </div>
+        </div>
+    </div>
+</div>
