@@ -6,9 +6,12 @@ using CloudBilling.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
+var dbPath = Path.Combine(builder.Environment.ContentRootPath, "App_Data", "database.db");
+Directory.CreateDirectory(Path.Combine(builder.Environment.ContentRootPath, "App_Data"));
+
 builder.Services.AddControllersWithViews();
 builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseSqlite("Data Source=database.db"));
+    options.UseSqlite($"Data Source={dbPath}"));
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
     .AddCookie(options =>
     {
