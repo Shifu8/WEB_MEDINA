@@ -29,3 +29,6 @@ appsettings.Development.json
 
 ## Publish output
 publish/
+
+startup.txt
+startup_err.txt
