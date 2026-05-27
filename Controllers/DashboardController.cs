@@ -17,7 +17,8 @@ public class DashboardController : Controller
         ViewBag.TotalProducts = await _db.Products.CountAsync();
         ViewBag.TotalClients = await _db.Clients.CountAsync();
         ViewBag.TotalInvoices = await _db.Invoices.CountAsync();
-        ViewBag.TotalRevenue = (await _db.Invoices.SumAsync(i => (double)i.Total));
+        var invoicesList = await _db.Invoices.ToListAsync();
+        ViewBag.TotalRevenue = invoicesList.Sum(i => i.Total);
         ViewBag.ActivePage = "dashboard";
         return View();
     }
